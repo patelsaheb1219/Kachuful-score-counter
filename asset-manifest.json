@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/Kachuful-score-counter/static/css/main.3e87cbdb.css",
+    "main.js": "/Kachuful-score-counter/static/js/main.d4e72f00.js",
+    "static/js/453.9852052a.chunk.js": "/Kachuful-score-counter/static/js/453.9852052a.chunk.js",
+    "service-worker.js": "/Kachuful-score-counter/service-worker.js",
+    "index.html": "/Kachuful-score-counter/index.html",
+    "main.3e87cbdb.css.map": "/Kachuful-score-counter/static/css/main.3e87cbdb.css.map",
+    "main.d4e72f00.js.map": "/Kachuful-score-counter/static/js/main.d4e72f00.js.map",
+    "453.9852052a.chunk.js.map": "/Kachuful-score-counter/static/js/453.9852052a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3e87cbdb.css",
+    "static/js/main.d4e72f00.js"
+  ]
+}
