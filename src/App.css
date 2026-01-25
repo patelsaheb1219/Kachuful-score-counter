@@ -1,0 +1,128 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f0f2f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 20px;
+}
+
+.suit-display {
+  font-size: 2rem;
+  margin: 10px;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  display: inline-block;
+  min-width: 150px;
+}
+
+.suit-spades, .suit-clubs {
+  color: black;
+}
+
+.suit-diamonds, .suit-hearts {
+  color: red;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+input[type="number"] {
+  width: 50px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 5px;
+  font-size: 1rem;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background-color: #6c757d;
+}
+
+.score-positive {
+  color: green;
+  font-weight: bold;
+}
+
+.score-zero {
+  color: #333;
+}
+
+.error-msg {
+  color: red;
+  margin: 10px;
+}
+
+.btn-result {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  margin: 0 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btn-result.btn-outline {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.btn-result.btn-outline:hover {
+  background-color: #f8f9fa;
+}
+
+.btn-result.btn-win {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.btn-result.btn-lose {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
