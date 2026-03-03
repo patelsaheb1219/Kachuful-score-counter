@@ -1,0 +1,87 @@
+name: Weekly Repo Status
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9:00 AM UTC
+  workflow_dispatch:      # Allow manual trigger
+
+jobs:
+  weekly-status:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gather stats and create issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const now = new Date();
+            const oneWeekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+            const since = oneWeekAgo.toISOString();
+            const weekLabel = now.toISOString().slice(0, 10);
+
+            // Commits in last 7 days
+            const commits = await github.paginate(github.rest.repos.listCommits, {
+              owner, repo, since, per_page: 100
+            });
+
+            // Opened PRs in last 7 days
+            const allPRs = await github.paginate(github.rest.pulls.list, {
+              owner, repo, state: 'all', sort: 'created', direction: 'desc', per_page: 100
+            });
+            const openedPRs = allPRs.filter(pr => new Date(pr.created_at) >= oneWeekAgo);
+            const mergedPRs = allPRs.filter(pr => pr.merged_at && new Date(pr.merged_at) >= oneWeekAgo);
+
+            // Opened issues in last 7 days
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner, repo, state: 'all', since, per_page: 100
+            });
+            const openedIssues = issues.filter(i => !i.pull_request && new Date(i.created_at) >= oneWeekAgo);
+            const closedIssues = issues.filter(i => !i.pull_request && i.state === 'closed' && new Date(i.closed_at) >= oneWeekAgo);
+
+            // Open issues/PRs totals
+            const openIssuesResp = await github.rest.issues.listForRepo({ owner, repo, state: 'open', per_page: 1 });
+            const openPRsResp = await github.rest.pulls.list({ owner, repo, state: 'open', per_page: 1 });
+
+            // Format commit list (top 10)
+            const commitLines = commits.slice(0, 10).map(c =>
+              `- [\`${c.sha.slice(0,7)}\`](${c.html_url}) ${c.commit.message.split('\n')[0]} — @${c.author?.login || c.commit.author.name}`
+            ).join('\n') || '_No commits this week_';
+
+            const body = [
+              `## 📊 Weekly Status Report — ${weekLabel}`,
+              `> Auto-generated every Monday. Covers the past 7 days.`,
+              ``,
+              `### 🔢 Summary`,
+              `| Metric | Count |`,
+              `|--------|-------|`,
+              `| Commits | ${commits.length} |`,
+              `| PRs Opened | ${openedPRs.length} |`,
+              `| PRs Merged | ${mergedPRs.length} |`,
+              `| Issues Opened | ${openedIssues.length} |`,
+              `| Issues Closed | ${closedIssues.length} |`,
+              ``,
+              `### 📝 Recent Commits (last 10)`,
+              commitLines,
+              ``,
+              `### 🔗 Quick Links`,
+              `- [All open issues](https://github.com/${owner}/${repo}/issues)`,
+              `- [All open PRs](https://github.com/${owner}/${repo}/pulls)`,
+              `- [Commits this week](https://github.com/${owner}/${repo}/commits)`,
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner,
+              repo,
+              title: `📊 Weekly Status Report — ${weekLabel}`,
+              body,
+              labels: ['weekly-status'],
+            });
