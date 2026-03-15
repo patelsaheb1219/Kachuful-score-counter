@@ -23,7 +23,7 @@
 #
 # Weekly activity report summarizing new issues, merged PRs, and open blockers, delivered as a GitHub issue.
 #
-# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"7169efa946f8c079cb436ed5455ad4a6427c5ce409ae1a36c41443b84dc66fdd","compiler_version":"v0.58.3","strict":true}
+# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"3db0f53dbd11fcea5a1a7b6ebbc37dd4bb052da813fa7c0fad6ed6cca8ecab7f","compiler_version":"v0.58.3","strict":true}
 
 name: "Weekly Activity Report"
 "on":
@@ -31,6 +31,15 @@ name: "Weekly Activity Report"
   - cron: "20 10 * * 4"
     # Friendly format: weekly (scattered)
   workflow_dispatch:
+    inputs:
+      end_date:
+        description: Report end date (YYYY-MM-DD). Defaults to today if omitted.
+        required: false
+        type: string
+      start_date:
+        description: Report start date (YYYY-MM-DD). Defaults to 7 days ago if omitted.
+        required: false
+        type: string
 
 permissions: {}
 
@@ -109,6 +118,8 @@ jobs:
           GH_AW_GITHUB_ACTOR: ${{ github.actor }}
           GH_AW_GITHUB_EVENT_COMMENT_ID: ${{ github.event.comment.id }}
           GH_AW_GITHUB_EVENT_DISCUSSION_NUMBER: ${{ github.event.discussion.number }}
+          GH_AW_GITHUB_EVENT_INPUTS_END_DATE: ${{ github.event.inputs.end_date }}
+          GH_AW_GITHUB_EVENT_INPUTS_START_DATE: ${{ github.event.inputs.start_date }}
           GH_AW_GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
           GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           GH_AW_GITHUB_REPOSITORY: ${{ github.repository }}
@@ -168,6 +179,8 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_PROMPT: /tmp/gh-aw/aw-prompts/prompt.txt
+          GH_AW_GITHUB_EVENT_INPUTS_END_DATE: ${{ github.event.inputs.end_date }}
+          GH_AW_GITHUB_EVENT_INPUTS_START_DATE: ${{ github.event.inputs.start_date }}
         with:
           script: |
             const { setupGlobals } = require('/opt/gh-aw/actions/setup_globals.cjs');
@@ -181,6 +194,8 @@ jobs:
           GH_AW_GITHUB_ACTOR: ${{ github.actor }}
           GH_AW_GITHUB_EVENT_COMMENT_ID: ${{ github.event.comment.id }}
           GH_AW_GITHUB_EVENT_DISCUSSION_NUMBER: ${{ github.event.discussion.number }}
+          GH_AW_GITHUB_EVENT_INPUTS_END_DATE: ${{ github.event.inputs.end_date }}
+          GH_AW_GITHUB_EVENT_INPUTS_START_DATE: ${{ github.event.inputs.start_date }}
           GH_AW_GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
           GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           GH_AW_GITHUB_REPOSITORY: ${{ github.repository }}
@@ -200,6 +215,8 @@ jobs:
                 GH_AW_GITHUB_ACTOR: process.env.GH_AW_GITHUB_ACTOR,
                 GH_AW_GITHUB_EVENT_COMMENT_ID: process.env.GH_AW_GITHUB_EVENT_COMMENT_ID,
                 GH_AW_GITHUB_EVENT_DISCUSSION_NUMBER: process.env.GH_AW_GITHUB_EVENT_DISCUSSION_NUMBER,
+                GH_AW_GITHUB_EVENT_INPUTS_END_DATE: process.env.GH_AW_GITHUB_EVENT_INPUTS_END_DATE,
+                GH_AW_GITHUB_EVENT_INPUTS_START_DATE: process.env.GH_AW_GITHUB_EVENT_INPUTS_START_DATE,
                 GH_AW_GITHUB_EVENT_ISSUE_NUMBER: process.env.GH_AW_GITHUB_EVENT_ISSUE_NUMBER,
                 GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER: process.env.GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER,
                 GH_AW_GITHUB_REPOSITORY: process.env.GH_AW_GITHUB_REPOSITORY,

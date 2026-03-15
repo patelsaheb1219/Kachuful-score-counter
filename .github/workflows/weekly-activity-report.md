@@ -1,6 +1,16 @@
 ---
 on:
   schedule: weekly
+  workflow_dispatch:
+    inputs:
+      start_date:
+        description: "Report start date (YYYY-MM-DD). Defaults to 7 days ago if omitted."
+        required: false
+        type: string
+      end_date:
+        description: "Report end date (YYYY-MM-DD). Defaults to today if omitted."
+        required: false
+        type: string
 permissions:
   contents: read
   issues: read
@@ -21,18 +31,24 @@ You are a repository activity reporter. Your job is to generate a concise weekly
 
 ## Your Task
 
-Generate a weekly activity report for the repository `patelsaheb1219/Kachuful-score-counter` covering the **last 7 days**. The report should be delivered as a new GitHub issue.
+Generate an activity report for the repository `patelsaheb1219/Kachuful-score-counter` covering a specific date range. The report should be delivered as a new GitHub issue.
+
+**Date range inputs** (provided via `workflow_dispatch`):
+- `start_date`: `${{ github.event.inputs.start_date }}` — if empty, default to 7 days before today
+- `end_date`: `${{ github.event.inputs.end_date }}` — if empty, default to today
+
+Resolve the actual start and end dates before proceeding. Use ISO format (YYYY-MM-DD) for all date calculations and GitHub API queries.
 
 ## Steps
 
-1. **Gather new issues**: Search for issues opened in the last 7 days. List each with its number, title, and link.
+1. **Gather new issues**: Search for issues opened between `start_date` and `end_date`. List each with its number, title, and link.
 
-2. **Gather merged pull requests**: Search for pull requests merged in the last 7 days. List each with its number, title, and link.
+2. **Gather merged pull requests**: Search for pull requests merged between `start_date` and `end_date`. List each with its number, title, and link.
 
 3. **Identify open blockers**: Search for open issues or PRs labeled `blocked`, `blocker`, or containing "blocker" in the title. Also look for any issues labeled `bug` or `critical` that are currently open.
 
 4. **Create a report issue** using the `create-issue` safe output with:
-   - **Title**: `📊 Weekly Activity Report — [week ending date, e.g. 2026-03-15]`
+   - **Title**: `📊 Activity Report — [start_date] to [end_date]`
    - **Labels**: (leave empty if labels don't exist)
    - **Body**: A well-formatted markdown report following the template below.
 
@@ -76,7 +92,7 @@ _Generated automatically by the Weekly Activity Report workflow._
 
 ## Guidelines
 
-- Use today's date as the report end date and 7 days prior as the start date.
+- If `start_date` or `end_date` inputs are empty strings, compute the defaults (today and 7 days ago) before searching.
 - Keep descriptions concise — titles and links are sufficient; no need to summarize each item individually.
 - If a section has no items, use the "none" placeholder text shown in the template.
-- Always create the issue even if all sections are empty — an empty week is still useful signal.
+- Always create the issue even if all sections are empty — an empty period is still useful signal.
