@@ -15,7 +15,7 @@ export const Setup: React.FC<SetupProps> = ({ players, setPlayers, startGame, er
         if (!newPlayerName.trim()) return;
         setPlayers([...players, {
             id: Date.now(),
-            name: newPlayerName,
+            name: newPlayerName.toUpperCase(),
             score: 0,
             currentBid: '',
             roundStatus: null,
@@ -25,31 +25,50 @@ export const Setup: React.FC<SetupProps> = ({ players, setPlayers, startGame, er
     };
 
     return (
-        <div className="card">
-            <h2>Add Players</h2>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+        <div className="neon-panel">
+            <h2>&gt; INITIALIZE PLAYERS</h2>
+            <div className="flex-center" style={{ marginBottom: '30px', marginTop: '20px', width: '100%' }}>
                 <input
                     type="text"
-                    placeholder="Player Name"
+                    placeholder="ENTER CODENAME..."
                     value={newPlayerName}
                     onChange={(e) => setNewPlayerName(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && addPlayer()}
-                    style={{ padding: '10px', fontSize: '1rem', width: '200px' }}
+                    autoFocus
+                    style={{ flex: 1 }}
                 />
-                <button onClick={addPlayer}>Add</button>
+                <button onClick={addPlayer}>ADD AGENT</button>
             </div>
 
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-                {players.map(p => (
-                    <li key={p.id} style={{ padding: '5px', fontSize: '1.2rem' }}>
-                        {p.name}
-                    </li>
-                ))}
-            </ul>
+            <div style={{ marginBottom: '30px', minHeight: '100px' }}>
+                {players.length === 0 ? (
+                    <div style={{ color: 'var(--color-text-dim)', fontStyle: 'italic', textAlign: 'center', padding: '20px' }}>
+                        Processing... No active agents detected.
+                    </div>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                         {players.map((p, index) => (
+                            <div key={p.id} className="player-list-item">
+                                <div>
+                                    <span className="player-number">{(index + 1).toString().padStart(2, '0')}</span>
+                                    {p.name}
+                                </div>
+                                <span style={{ color: 'var(--color-accent)', fontSize: '0.8rem', letterSpacing: '2px' }}>READY</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
-            <button onClick={startGame} disabled={players.length < 2} style={{ marginTop: '20px' }}>
-                Start Game
+            <button 
+                className="primary-action"
+                onClick={startGame} 
+                disabled={players.length < 2} 
+                style={{ width: '100%', padding: '15px', marginTop: '20px' }}
+            >
+                {players.length < 2 ? 'AWAITING AGENTS (MIN 2)' : 'INITIATE PROTOCOL_V1'}
             </button>
+            
             {errorMsg && <p className="error-msg">{errorMsg}</p>}
         </div>
     );

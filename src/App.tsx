@@ -76,8 +76,11 @@ function App() {
   return (
     <div className="App">
       <header className="header">
-        <h1>Kachuful Score Counter</h1>
+        <h1 className="title-neon">KACHUFUL</h1>
+        <div className="subtitle">SCORE COUNTER // NEON EDITION</div>
       </header>
+      
+      {errorMsg && <div className="error-msg">{errorMsg}</div>}
 
       {gameState === 'SETUP' && (
         <Setup
